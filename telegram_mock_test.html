@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mock Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --tg-bg: #F3F4F6;
+    --tg-surface: #FFFFFF;
+    --tg-text: #14213D;
+    --tg-hint: #6B7280;
+    --tg-button: #1D4E89;
+    --tg-button-text: #FFFFFF;
+    --tg-secondary-bg: #E9EBEF;
+
+    --brand: #1D4E89;
+    --brand-light: #E8EEF6;
+    --success: #21754A;
+    --success-light: #E4F3EA;
+    --danger: #AA3729;
+    --danger-light: #FAEAE8;
+    --warning: #B4790F;
+    --marked: #6B4C9A;
+    --marked-light: #EDE7F5;
+    --border: #E1E4E9;
+
+    --font-display: 'Space Grotesk', -apple-system, 'Segoe UI', sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --tg-bg: #17191F;
+      --tg-surface: #1F222A;
+      --tg-text: #EDEEF2;
+      --tg-hint: #8B909C;
+      --tg-secondary-bg: #262933;
+      --border: #333744;
+      --brand-light: #1E2A3C;
+      --success-light: #16281F;
+      --danger-light: #2E1917;
+      --marked-light: #241C33;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--tg-bg); color: var(--tg-text);
+    font-family: var(--font-body);
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  #app {
+    max-width: 480px; margin: 0 auto; min-height: 100%;
+    display: flex; flex-direction: column;
+  }
+  button { font-family: inherit; }
+  button:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--brand); outline-offset: 2px;
+  }
+
+  .screen { display: none; flex: 1; flex-direction: column; padding: 22px 18px 28px; animation: fadeIn .25s ease; }
+  .screen.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce) { .screen { animation: none; } }
+
+  /* Start screen */
+  .start-title { font-family: var(--font-display); font-size: 25px; font-weight: 600; line-height: 1.3; margin: 6px 0 10px; }
+  .start-greeting { font-size: 14.5px; color: var(--tg-hint); margin-bottom: 26px; line-height: 1.5; }
+  .start-meta { display: flex; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
+  .meta-pill { background: var(--tg-secondary-bg); border-radius: 10px; padding: 10px 12px; flex: 1; min-width: 96px; }
+  .meta-pill .num { font-family: var(--font-display); font-size: 19px; font-weight: 600; display: block; }
+  .meta-pill .lbl { font-size: 11.5px; color: var(--tg-hint); }
+  .start-rules { background: var(--tg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-bottom: 26px; }
+  .start-rules h3 { font-size: 13.5px; margin: 0 0 10px; font-weight: 600; }
+  .start-rules ul { margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--tg-hint); line-height: 1.65; }
+  .start-rules li { margin-bottom: 4px; }
+  .spacer { flex: 1; }
+
+  .btn-primary {
+    background: var(--brand); color: var(--tg-button-text); border: none;
+    border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 600;
+    cursor: pointer; width: 100%;
+  }
+  .btn-primary:active { opacity: .85; }
+  .btn-secondary {
+    background: transparent; color: var(--brand); border: 1.5px solid var(--brand);
+    border-radius: 12px; padding: 13px; font-size: 14.5px; font-weight: 600;
+    cursor: pointer; width: 100%;
+  }
+
+  /* Quiz screen */
+  .quiz-header { display: flex; justify-content: space-between; align-items: center; }
+  .quiz-title { font-size: 12.5px; color: var(--tg-hint); font-weight: 500; }
+  .timer { font-family: var(--font-display); font-size: 17px; font-weight: 600; }
+  .timer.low { color: var(--danger); }
+  .progress-track { height: 4px; background: var(--tg-secondary-bg); border-radius: 4px; margin: 14px 0 20px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--brand); border-radius: 4px; transition: width .3s ease; }
+
+  .q-tag { display: inline-block; font-size: 11.5px; font-weight: 600; color: var(--brand); background: var(--brand-light); padding: 4px 10px; border-radius: 999px; margin-bottom: 12px; }
+  .q-count { font-size: 12.5px; color: var(--tg-hint); margin-bottom: 6px; }
+  .q-text { font-size: 16.5px; font-weight: 500; line-height: 1.5; margin-bottom: 20px; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .option {
+    display: flex; align-items: center; gap: 12px;
+    border: 1.5px solid var(--border); background: var(--tg-surface);
+    border-radius: 12px; padding: 13px 14px; font-size: 14.5px;
+    text-align: left; cursor: pointer; width: 100%;
+  }
+  .option .letter {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    background: var(--tg-secondary-bg); color: var(--tg-hint);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12.5px; font-weight: 600;
+  }
+  .option.selected { border-color: var(--brand); background: var(--brand-light); }
+  .option.selected .letter { background: var(--brand); color: #fff; }
+
+  .mark-btn {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: transparent; border: 1.5px solid var(--border); color: var(--tg-hint);
+    border-radius: 10px; padding: 10px; font-size: 13px; font-weight: 600;
+    margin-bottom: 18px; cursor: pointer; width: 100%;
+  }
+  .mark-btn.active { border-color: var(--marked); color: var(--marked); background: var(--marked-light); }
+
+  .palette-label { font-size: 12px; color: var(--tg-hint); margin-bottom: 8px; font-weight: 500; }
+  .palette { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+  .palette button {
+    width: 34px; height: 34px; border-radius: 8px;
+    border: 1.5px solid var(--border); background: var(--tg-surface);
+    font-size: 12.5px; font-weight: 600; color: var(--tg-hint); cursor: pointer;
+  }
+  .palette button.answered { background: var(--brand); border-color: var(--brand); color: #fff; }
+  .palette button.visited { border-color: var(--warning); color: var(--warning); }
+  .palette button.current { outline: 2px solid var(--tg-text); outline-offset: 1.5px; }
+  .palette button.marked { box-shadow: 0 0 0 2px var(--marked) inset; }
+
+  .quiz-nav { display: flex; gap: 10px; margin-top: auto; padding-top: 8px; }
+  .quiz-nav button { flex: 1; padding: 13px; border-radius: 12px; font-size: 14.5px; font-weight: 600; cursor: pointer; }
+  .nav-prev { background: transparent; border: 1.5px solid var(--border); color: var(--tg-text); }
+  .nav-prev:disabled { opacity: .35; }
+  .nav-next { background: var(--brand); border: none; color: #fff; }
+  .nav-submit { background: var(--success); border: none; color: #fff; }
+
+  /* Results screen */
+  .results-header { text-align: center; margin: 6px 0 22px; }
+  .results-header .lbl { font-size: 13px; color: var(--tg-hint); margin-bottom: 10px; }
+  .score-big { font-family: var(--font-display); font-size: 46px; font-weight: 700; line-height: 1; }
+  .score-sub { font-size: 13.5px; color: var(--tg-hint); margin-top: 6px; }
+  .stat-row { display: flex; gap: 10px; margin-bottom: 22px; }
+  .stat-box { flex: 1; background: var(--tg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 10px; text-align: center; }
+  .stat-box .n { font-family: var(--font-display); font-size: 19px; font-weight: 600; }
+  .stat-box .l { font-size: 11px; color: var(--tg-hint); margin-top: 3px; }
+  .stat-box.correct .n { color: var(--success); }
+  .stat-box.wrong .n { color: var(--danger); }
+
+  .review-list { display: none; flex-direction: column; gap: 12px; margin-top: 16px; }
+  .review-list.open { display: flex; }
+  .review-item { background: var(--tg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+  .review-item .ri-q { font-size: 13.5px; font-weight: 500; margin-bottom: 10px; line-height: 1.45; }
+  .review-item .ri-a { font-size: 12.5px; margin-top: 3px; }
+  .review-item .ri-a.wrong { color: var(--danger); }
+  .review-item .ri-a.correct { color: var(--success); }
+  .review-item .ri-a.skip { color: var(--tg-hint); }
+
+  .results-actions { margin-top: 24px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <section id="screen-start" class="screen active">
+    <h1 class="start-title" id="start-title">SSC · Banking · UPSC Practice Set</h1>
+    <p class="start-greeting" id="start-greeting">Attempt the full set under exam conditions.</p>
+
+    <div class="start-meta">
+      <div class="meta-pill"><span class="num" id="meta-count">8</span><span class="lbl">Questions</span></div>
+      <div class="meta-pill"><span class="num" id="meta-time">10:00</span><span class="lbl">Duration</span></div>
+      <div class="meta-pill"><span class="num" id="meta-neg">-0.25</span><span class="lbl">Per wrong</span></div>
+    </div>
+
+    <div class="start-rules">
+      <h3>Before you start</h3>
+      <ul>
+        <li>Each question has exactly one correct option.</li>
+        <li>Use the number grid to jump between questions.</li>
+        <li>The test auto-submits when the timer runs out.</li>
+        <li>Wrong answers carry a small negative mark.</li>
+      </ul>
+    </div>
+
+    <div class="spacer"></div>
+    <button class="btn-primary" id="btn-start">Start test</button>
+  </section>
+
+  <section id="screen-quiz" class="screen">
+    <div class="quiz-header">
+      <span class="quiz-title" id="quiz-title">Mock Test</span>
+      <span class="timer" id="timer">10:00</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+
+    <span class="q-tag" id="q-tag">Polity</span>
+    <div class="q-count" id="q-count">Question 1 of 8</div>
+    <div class="q-text" id="q-text"></div>
+
+    <div class="options" id="options"></div>
+
+    <button class="mark-btn" id="btn-mark">🔖 Mark for review</button>
+
+    <div class="palette-label">Jump to question</div>
+    <div class="palette" id="palette"></div>
+
+    <div class="quiz-nav">
+      <button class="nav-prev" id="btn-prev">← Previous</button>
+      <button class="nav-next" id="btn-next">Next →</button>
+    </div>
+  </section>
+
+  <section id="screen-results" class="screen">
+    <div class="results-header">
+      <div class="lbl">Test complete</div>
+      <div class="score-big" id="score-big">0/8</div>
+      <div class="score-sub" id="score-sub">Net score after negative marking</div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-box correct"><div class="n" id="stat-correct">0</div><div class="l">Correct</div></div>
+      <div class="stat-box wrong"><div class="n" id="stat-wrong">0</div><div class="l">Incorrect</div></div>
+      <div class="stat-box"><div class="n" id="stat-skipped">0</div><div class="l">Skipped</div></div>
+    </div>
+
+    <button class="btn-secondary" id="btn-toggle-review">Review answers</button>
+    <div class="review-list" id="review-list"></div>
+
+    <div class="results-actions">
+      <button class="btn-primary" id="btn-retake">Retake test</button>
+    </div>
+  </section>
+
+</div>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+/* ============================================================
+   CONFIG — edit these to make it your own test
+   ============================================================ */
+const CONFIG = {
+  testTitle: "SSC · Banking · UPSC Practice Set",
+  totalTimeSeconds: 600,      // 10 minutes
+  negativeMarking: 0.25,      // deducted per wrong answer — set to 0 to disable
+};
+
+/* Edit / replace this array with your own questions.
+   "correct" is the zero-based index into "options". */
+const QUESTIONS = [
+  {
+    subject: "Polity",
+    text: "Which Article of the Indian Constitution abolishes untouchability?",
+    options: ["Article 14", "Article 15", "Article 17", "Article 21"],
+    correct: 2
+  },
+  {
+    subject: "Banking",
+    text: "The headquarters of the Reserve Bank of India (RBI) is located in which city?",
+    options: ["New Delhi", "Mumbai", "Kolkata", "Chennai"],
+    correct: 1
+  },
+  {
+    subject: "Reasoning",
+    text: "In a certain code, CAT is written as DBU. How is DOG written in that code?",
+    options: ["EPH", "EQH", "EPI", "FPH"],
+    correct: 0
+  },
+  {
+    subject: "Quant",
+    text: "A train 120 metres long is running at 90 km/hr. How long will it take to cross a pole?",
+    options: ["4.8 seconds", "5.2 seconds", "6 seconds", "4.2 seconds"],
+    correct: 0
+  },
+  {
+    subject: "Banking",
+    text: "In banking terminology, what does NEFT stand for?",
+    options: [
+      "National Electronic Funds Transfer",
+      "National Economic Fund Transfer",
+      "New Electronic Fund Transaction",
+      "National Efficient Funds Transfer"
+    ],
+    correct: 0
+  },
+  {
+    subject: "Reasoning",
+    text: "Find the next number in the series: 2, 4, 8, 16, 32, ?",
+    options: ["48", "64", "60", "56"],
+    correct: 1
+  },
+  {
+    subject: "Geography",
+    text: "Which is the longest river flowing within India?",
+    options: ["Yamuna", "Godavari", "Ganga", "Brahmaputra"],
+    correct: 2
+  },
+  {
+    subject: "Quant",
+    text: "What is 15% of 200?",
+    options: ["20", "25", "30", "35"],
+    correct: 2
+  }
+];
+
+/* ============================================================
+   TELEGRAM INTEGRATION
+   Everything here is guarded so the page still runs fine
+   when opened in a plain browser during testing.
+   ============================================================ */
+const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
+
+function initTelegram() {
+  if (!tg) return;
+  try {
+    tg.ready();
+    tg.expand();
+    applyTelegramTheme();
+    tg.onEvent('themeChanged', applyTelegramTheme);
+  } catch (e) { /* running outside Telegram — ignore */ }
+}
+
+function applyTelegramTheme() {
+  if (!tg || !tg.themeParams) return;
+  const p = tg.themeParams;
+  const root = document.documentElement.style;
+  if (p.bg_color) root.setProperty('--tg-bg', p.bg_color);
+  if (p.text_color) root.setProperty('--tg-text', p.text_color);
+  if (p.hint_color) root.setProperty('--tg-hint', p.hint_color);
+  if (p.button_color) root.setProperty('--tg-button', p.button_color);
+  if (p.button_text_color) root.setProperty('--tg-button-text', p.button_text_color);
+  if (p.secondary_bg_color) root.setProperty('--tg-secondary-bg', p.secondary_bg_color);
+}
+
+function haptic(kind) {
+  if (!tg || !tg.HapticFeedback) return;
+  try {
+    if (kind === 'selection') tg.HapticFeedback.selectionChanged();
+    else if (kind === 'success') tg.HapticFeedback.notificationOccurred('success');
+    else if (kind === 'error') tg.HapticFeedback.notificationOccurred('error');
+  } catch (e) {}
+}
+
+function getFirstName() {
+  try {
+    return (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user.first_name : null;
+  } catch (e) { return null; }
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const state = {
+  current: 0,
+  answers: {},   // questionIndex -> selected option index
+  visited: {},   // questionIndex -> true
+  marked: {},    // questionIndex -> true
+  remaining: CONFIG.totalTimeSeconds,
+  timerId: null,
+  submitted: false
+};
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function fmtTime(sec) {
+  const s = Math.max(sec, 0);
+  const m = Math.floor(s / 60).toString().padStart(2, '0');
+  const r = Math.floor(s % 60).toString().padStart(2, '0');
+  return m + ':' + r;
+}
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(function (el) { el.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+}
+function letterFor(i) { return String.fromCharCode(65 + i); }
+
+/* ============================================================
+   START SCREEN
+   ============================================================ */
+function setupStartScreen() {
+  document.getElementById('start-title').textContent = CONFIG.testTitle;
+  document.getElementById('quiz-title').textContent = CONFIG.testTitle;
+  document.getElementById('meta-count').textContent = QUESTIONS.length;
+  document.getElementById('meta-time').textContent = fmtTime(CONFIG.totalTimeSeconds);
+  document.getElementById('meta-neg').textContent = CONFIG.negativeMarking > 0 ? ('-' + CONFIG.negativeMarking) : 'None';
+
+  const name = getFirstName();
+  document.getElementById('start-greeting').textContent = name
+    ? ('Hi ' + name + ' — attempt the full set under exam conditions.')
+    : 'Attempt the full set under exam conditions.';
+}
+
+/* ============================================================
+   QUIZ SCREEN
+   ============================================================ */
+function startTest() {
+  state.current = 0;
+  state.answers = {};
+  state.visited = {};
+  state.marked = {};
+  state.remaining = CONFIG.totalTimeSeconds;
+  state.submitted = false;
+
+  showScreen('screen-quiz');
+  renderQuestion();
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(state.timerId);
+  updateTimerDisplay();
+  state.timerId = setInterval(function () {
+    state.remaining--;
+    updateTimerDisplay();
+    if (state.remaining <= 0) {
+      clearInterval(state.timerId);
+      submitTest();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const el = document.getElementById('timer');
+  el.textContent = fmtTime(state.remaining);
+  el.classList.toggle('low', state.remaining <= 60);
+}
+
+function renderQuestion() {
+  const i = state.current;
+  const q = QUESTIONS[i];
+  state.visited[i] = true;
+
+  document.getElementById('q-tag').textContent = q.subject;
+  document.getElementById('q-count').textContent = 'Question ' + (i + 1) + ' of ' + QUESTIONS.length;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('progress-fill').style.width = ((i + 1) / QUESTIONS.length * 100) + '%';
+
+  const optionsEl = document.getElementById('options');
+  optionsEl.innerHTML = '';
+  q.options.forEach(function (opt, idx) {
+    const btn = document.createElement('button');
+    btn.className = 'option' + (state.answers[i] === idx ? ' selected' : '');
+    btn.innerHTML = '<span class="letter">' + letterFor(idx) + '</span><span>' + opt + '</span>';
+    btn.addEventListener('click', function () { selectOption(idx); });
+    optionsEl.appendChild(btn);
+  });
+
+  document.getElementById('btn-mark').classList.toggle('active', !!state.marked[i]);
+  document.getElementById('btn-prev').disabled = i === 0;
+
+  const nextBtn = document.getElementById('btn-next');
+  const isLast = i === QUESTIONS.length - 1;
+  nextBtn.textContent = isLast ? 'Submit test' : 'Next →';
+  nextBtn.className = isLast ? 'nav-submit' : 'nav-next';
+
+  renderPalette();
+}
+
+function selectOption(idx) {
+  state.answers[state.current] = idx;
+  haptic('selection');
+  renderQuestion();
+}
+
+function toggleMark() {
+  const i = state.current;
+  state.marked[i] = !state.marked[i];
+  renderQuestion();
+}
+
+function renderPalette() {
+  const el = document.getElementById('palette');
+  el.innerHTML = '';
+  QUESTIONS.forEach(function (_, idx) {
+    const btn = document.createElement('button');
+    btn.textContent = idx + 1;
+    let cls = '';
+    if (state.answers[idx] !== undefined) cls = 'answered';
+    else if (state.visited[idx]) cls = 'visited';
+    if (state.marked[idx]) cls += ' marked';
+    if (idx === state.current) cls += ' current';
+    btn.className = cls.trim();
+    btn.addEventListener('click', function () { state.current = idx; renderQuestion(); });
+    el.appendChild(btn);
+  });
+}
+
+function nextQuestion() {
+  if (state.current === QUESTIONS.length - 1) { submitTest(); return; }
+  state.current++;
+  renderQuestion();
+}
+function prevQuestion() {
+  if (state.current === 0) return;
+  state.current--;
+  renderQuestion();
+}
+
+/* ============================================================
+   RESULTS
+   ============================================================ */
+function submitTest() {
+  if (state.submitted) return;
+  state.submitted = true;
+  clearInterval(state.timerId);
+
+  let correct = 0, wrong = 0, skipped = 0;
+  QUESTIONS.forEach(function (q, idx) {
+    const a = state.answers[idx];
+    if (a === undefined) skipped++;
+    else if (a === q.correct) correct++;
+    else wrong++;
+  });
+
+  const net = correct - wrong * CONFIG.negativeMarking;
+  haptic(wrong === 0 && skipped === 0 ? 'success' : 'error');
+
+  document.getElementById('score-big').textContent = (Number.isInteger(net) ? net : net.toFixed(2)) + '/' + QUESTIONS.length;
+  document.getElementById('score-sub').textContent = CONFIG.negativeMarking > 0 ? 'Net score after negative marking' : 'Correct answers';
+  document.getElementById('stat-correct').textContent = correct;
+  document.getElementById('stat-wrong').textContent = wrong;
+  document.getElementById('stat-skipped').textContent = skipped;
+
+  renderReview();
+  showScreen('screen-results');
+
+  // Note: sendData() only reaches your bot when the Mini App was opened via a
+  // Telegram keyboard button. It does NOT fire for Direct Link apps (t.me/bot/app)
+  // or the menu-button launcher — for those, POST the result to your own backend
+  // instead if you want to save scores or build a leaderboard.
+  if (tg && typeof tg.sendData === 'function') {
+    try {
+      tg.sendData(JSON.stringify({ correct: correct, wrong: wrong, skipped: skipped, net: net, total: QUESTIONS.length }));
+    } catch (e) {}
+  }
+}
+
+function renderReview() {
+  const el = document.getElementById('review-list');
+  el.innerHTML = '';
+  QUESTIONS.forEach(function (q, idx) {
+    const a = state.answers[idx];
+    const item = document.createElement('div');
+    item.className = 'review-item';
+
+    let answerHtml;
+    if (a === undefined) {
+      answerHtml = '<div class="ri-a skip">Skipped — correct: ' + letterFor(q.correct) + '. ' + q.options[q.correct] + '</div>';
+    } else if (a === q.correct) {
+      answerHtml = '<div class="ri-a correct">Your answer: ' + letterFor(a) + '. ' + q.options[a] + ' ✓</div>';
+    } else {
+      answerHtml = '<div class="ri-a wrong">Your answer: ' + letterFor(a) + '. ' + q.options[a] + ' ✗</div>' +
+                   '<div class="ri-a correct">Correct: ' + letterFor(q.correct) + '. ' + q.options[q.correct] + '</div>';
+    }
+    item.innerHTML = '<div class="ri-q">' + (idx + 1) + '. ' + q.text + '</div>' + answerHtml;
+    el.appendChild(item);
+  });
+}
+
+function toggleReviewList() {
+  const el = document.getElementById('review-list');
+  const open = el.classList.toggle('open');
+  document.getElementById('btn-toggle-review').textContent = open ? 'Hide answers' : 'Review answers';
+}
+
+function retakeTest() {
+  showScreen('screen-start');
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.getElementById('btn-start').addEventListener('click', startTest);
+document.getElementById('btn-prev').addEventListener('click', prevQuestion);
+document.getElementById('btn-next').addEventListener('click', nextQuestion);
+document.getElementById('btn-mark').addEventListener('click', toggleMark);
+document.getElementById('btn-toggle-review').addEventListener('click', toggleReviewList);
+document.getElementById('btn-retake').addEventListener('click', retakeTest);
+
+initTelegram();
+setupStartScreen();
+</script>
+</body>
+</html>
