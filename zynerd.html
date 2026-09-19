@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore App Interface</title>
+    <!-- Importing Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Importing FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 
+      Reference to provided file: 1000362515.jpg 
+      This layout is built to replicate the UI found in that image.
+    -->
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Mobile Device Container */
+        .app-container {
+            width: 100%;
+            max-width: 414px; /* iPhone Max width approx */
+            height: 896px;
+            max-height: 100vh;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Header Area */
+        header {
+            padding: 30px 24px 15px;
+        }
+
+        h1 {
+            font-size: 26px;
+            color: #1a1a1a;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 30px;
+            padding: 12px 20px;
+            margin: 0 24px 20px;
+        }
+
+        .search-bar i {
+            color: #9ca3af;
+            font-size: 18px;
+            margin-right: 12px;
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            font-size: 16px;
+            width: 100%;
+            color: #1a1a1a;
+        }
+
+        .search-bar input::placeholder {
+            color: #9ca3af;
+        }
+
+        /* Main Content Scroll Area */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 24px 100px; /* Extra bottom padding for floating nav */
+        }
+
+        /* Hide scrollbar for cleaner look */
+        .main-content::-webkit-scrollbar {
+            display: none;
+        }
+        .main-content {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+        }
+
+        /* Icon Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            row-gap: 20px;
+            column-gap: 10px;
+        }
+
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .icon-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 8px;
+            background-color: #fff;
+        }
+
+        .icon-circle i {
+            font-size: 24px;
+            color: #ea4c16; /* App Brand Orange */
+        }
+
+        .grid-item span {
+            font-size: 10px;
+            color: #4b5563;
+            line-height: 1.3;
+            max-width: 70px;
+        }
+
+        /* Bottom Floating Navigation */
+        .bottom-nav {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            background-color: #ffffff;
+            border-radius: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #1a1a1a;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        /* Active Nav State */
+        .nav-item.active {
+            background-color: #ffefe6; /* Light orange background */
+        }
+        
+        .nav-item.active i, .nav-item.active span {
+            color: #ea4c16;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header>
+            <h1>Explore</h1>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search">
+        </div>
+
+        <!-- Main Scrollable Content -->
+        <div class="main-content">
+            
+            <!-- INSIGHTS SECTION -->
+            <div class="section">
+                <div class="section-title">INSIGHTS</div>
+                <div class="grid">
+                    <div class="grid-item">
+                        <div class="icon-circle"><i class="fas fa-code-branch"></i></div>
+                        <span>Allotments</span>
+                    </div>
+                    <div class="grid-item">
+                        <div class="icon-circle"><i class="fas fa-chart-bar"></i></div>
+                        <span>Closing Ranks</span>
+                    </div>
+                    <div class="grid-item">
+                        <div class="icon-circle"><i class="fas fa-th"></i></div>
+                        <span>Seat Matrix</span>
+                    </div>
+                    <div class="grid-item">
+                        <div class="icon-circle"><i class="fas fa-file-invoice-dollar"></i></div>
+                        <span>Fee, Stipend &<br>Bond</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXPLORE SECTION -->
+            <div class="section">
+                <div class="section-title">EXPLORE</div>
+                <div class="grid">
+                    <div class="grid-item">
+                        <div class="icon-circle"><i class="far fa-building"></i></div>
+                        <span>Institutes</span>
+                    </div>
+                    <div class="grid-item">
+                        <div class="icon-circle"><i class="fas fa-graduation-cap"></i></div>
+                        <span>Courses</span>
+                    </div>
+                    <div class="grid-item">
+                        <div class="icon-circle"><i class="fas fa-university"></i></div>
+                        <span>Universities</span>
+                    </div>
+                    <div class="grid-item">
+                        <div class="icon-circle"><i class="fas fa-hat-wizard"></i></div>
+                        <span>Counsellings</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOOLS SECTION -->
+            <div class="section">
+                <div class="section-title">TOOLS</div>
+                <div class="grid">
+                    <div class="grid-item">
+                        <div class="icon-circle"><i class="fas fa-project-diagram"></i></div>
+                        <span>Allotment<br>Mapping</span>
+                    </div>
+                    <div class="grid-item">
+                        <div class="icon-circle"><i class="fas fa-search"></i></div>
+                        <span>Rank Scan</span>
+                    </div>
+                    <div class="grid-item">
+                        <div class="icon-circle"><i class="fas fa-arrow-trend-up"></i></div>
+                        <span>Seat Increase</span>
+                    </div>
+                    <div class="grid-item">
+                        <div class="icon-circle"><i class="fas fa-award"></i></div>
+                        <span>Merit List</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESOURCES SECTION -->
+            <div class="section">
+                <div class="section-title">RESOURCES</div>
+                <div class="grid">
+                    <div class="grid-item">
+                        <div class="icon-circle"><i class="fas fa-file-alt"></i></div>
+                        <span>Resources</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Floating Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <i class="fas fa-th-large"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item active">
+                <i class="fas fa-search"></i>
+                <span>Explore</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-sparkles"></i>
+                <span>Zyra</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-heart"></i>
+                <span>Choices</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-play"></i>
+                <span>Videos</span>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
